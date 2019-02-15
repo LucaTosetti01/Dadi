@@ -1,45 +1,116 @@
-
 package dadi;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**@author Tosetti Luca
+/**
+ * @author Tosetti Luca
  *
- * Questa classe collabora con il main Gruppo2_Es1_d ed estende la classe Thread
+ * Questa classe collabora con il main Gruppo2_Es1_d e con CDatiCondivisi ed
+ * estende la classe Thread
  */
-public class ThDado1 extends Thread{
-        
+public class ThDado1 extends Thread {
 
-    
-        /**@author Tosetti Luca
-         *
-         * Metodo corrispondente al "main" del thread th1
-         * 
-         * Alla variabile num viene assegnato un numero randomico tra 1 e 6,si fa l'output di una strigna e infine si fa attendere 
-         * al thread 2 secondi con il metodo sleep(2000).
-         */
-        @Override
-        public void run() {
-            try {
-            while(true) {
-                
-                    int num=(int) ((Math.random()*6)+1);
-                    System.out.println("Hai lanciato il 1° dado: E' uscito "+num);
-                    Thread.sleep(2000);
-                } 
-            }
-                catch (InterruptedException ex) {
-                    Logger.getLogger(ThDado1.class.getName()).log(Level.SEVERE, null, ex);
+    /**
+     * @author Tosetti Luca
+     *
+     * Oggetto che riceverà tutti i valori di ciascuna ruota dai corrispettivi
+     * thread.
+     */
+    private CDatiCondivisi PtrDati;
+    /**
+     * @author Tosetti Luca
+     *
+     * Attributo che indica se bisogna usare il metodo sleep della classe estesa
+     * Thread.
+     */
+    private boolean usatoSleep;
+    /**
+     * @author Tosetti Luca
+     *
+     * Attributo che indica se va usato il metodo yield() della classe estesa
+     * Thread.
+     */
+    private boolean usatoYield;
+    /**
+     * @author Tosetti Luca
+     *
+     * Attributo che indica quale dado viene lanciato (il primo o il secondo).
+     */
+    private int numeroDado;
+
+    /**
+     * @author Tosetti Luca
+     *
+     * @brief: Metodo costruttore con parametri usato per inizializzare il
+     * thread
+     *
+     * Viene richiamato il costruttore della classe Thread e vengono
+     * inizializzati gli attributi usatoSleep,usatoYield,numeroDado e PtrDati
+     * con i parametri che vengono passati al metodo.
+     *
+     * @param sleep Parametro che inizializza usatoSleep a true o false.
+     * @param yield Parametro che inizializza usatoYield a true o false.
+     * @param numeroDado Parametro che inizializza numeroDado a true o false.
+     * @param dati Parametro che contiene l'oggetto della classe CDatiCondivisi
+     * creato nel main
+     *
+     */
+    public ThDado1(boolean sleep, boolean yield, int numeroDado, CDatiCondivisi dati) {
+        super();
+        usatoSleep = sleep;
+        usatoYield = yield;
+        this.numeroDado = numeroDado;
+        this.PtrDati = dati;
+    }
+
+    /**
+     * @author Tosetti Luca
+     *
+     * @brief: Metodo "main" dei thread che vengono creati con l'uso di questa
+     * classe
+     *
+     * Alla variabile num viene assegnato un numero randomico tra 1 e 6,si fa
+     * l'output di una strigna. Successivamente in base al valore assunto
+     * dall'attributo numeroDado si usano i metodi
+     * setPrimaRuota(),setSecondaRuota(),setTerzaRuota() che vanno ad assegnare
+     * il valore che gli viene passato agli attributi della classe
+     * CDatiCondivisi, infine si fa attendere al thread 2 secondi con il metodo
+     * sleep(2000) oppure si fa ritornare il processo in stato di ready con il
+     * metodo yield().
+     *
+     */
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                if (Thread.currentThread().isInterrupted()) {
+                    break;
                 }
-            
-           
-           
-        
-            
-            
+                int num = (int) ((Math.random() * 6) + 1);
+
+                PtrDati.aggiungiStringa("Hai lanciato il " + numeroDado + "° dado: E' uscito " + num);
+                if (numeroDado == 1) {
+                    PtrDati.setPrimaRuota(num);
+                }
+                if (numeroDado == 2) {
+                    PtrDati.setSecondaRuota(num);
+                }
+                if (numeroDado == 3) {
+                    PtrDati.setTerzaRuota(num);
+                }
+
+                if (usatoSleep) {
+                    Thread.sleep(2000);
+                }
+                if (usatoYield) {
+                    Thread.yield();
+                }
+            }
+        } catch (InterruptedException ex) {
+
         }
-        
-        
-        
+
+    }
+
 }
