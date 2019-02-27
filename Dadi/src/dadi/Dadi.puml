@@ -1,0 +1,41 @@
+@startuml
+actor Utente
+participant main
+entity DatiCondivisi
+entity ThDado_1
+entity ThDado_2
+entity ThDado_3
+entity ThVisualizza
+
+Utente -> main ++ : new
+
+main -> DatiCondivisi ** : new
+
+main -> ThVisualizza ** : new
+main -> ThDado_1 ** : new
+main -> ThDado_2 ** : new
+main -> ThDado_3 ** : new
+
+Utente -> main : Premere invio
+
+main -> ThDado_1 ++ : start
+main -> ThDado_2 ++ : start
+main -> ThDado_3 ++ : start
+main -> ThVisualizza ++ : start
+
+Utente -> main : Premere invio
+
+Note over main : Join ThDado_1
+ThDado_1 -> main -- : return
+Note over main : Join ThDado_2
+ThDado_2 -> main -- : return
+Note over main : Join ThDado_3
+ThDado_3 -> main -- : return
+Note over main : Join ThVisualizza
+ThVisualizza -> main -- : return
+
+DatiCondivisi -> main : Visualizza schermo
+main -> Utente -- : Vincita/Perdita
+
+
+@enduml

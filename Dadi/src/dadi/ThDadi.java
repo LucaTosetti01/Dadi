@@ -1,47 +1,36 @@
 package dadi;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * @author Tosetti Luca
  *
- * Questa classe collabora con il main Gruppo2_Es1_d e con CDatiCondivisi ed
- * estende la classe Thread
+ * Questa classe collabora con il main Dadi e con CDatiCondivisi ed estende la
+ * classe Thread
  */
-public class ThDado1 extends Thread {
+public class ThDadi extends Thread {
 
     /**
-     * @author Tosetti Luca
-     *
      * Oggetto che riceverà tutti i valori di ciascuna ruota dai corrispettivi
      * thread.
      */
     private CDatiCondivisi PtrDati;
     /**
-     * @author Tosetti Luca
-     *
      * Attributo che indica se bisogna usare il metodo sleep della classe estesa
      * Thread.
      */
     private boolean usatoSleep;
     /**
-     * @author Tosetti Luca
-     *
      * Attributo che indica se va usato il metodo yield() della classe estesa
      * Thread.
      */
     private boolean usatoYield;
     /**
-     * @author Tosetti Luca
-     *
      * Attributo che indica quale dado viene lanciato (il primo o il secondo).
      */
     private int numeroDado;
 
+    private boolean finito;
+
     /**
-     * @author Tosetti Luca
-     *
      * @brief: Metodo costruttore con parametri usato per inizializzare il
      * thread
      *
@@ -56,17 +45,16 @@ public class ThDado1 extends Thread {
      * creato nel main
      *
      */
-    public ThDado1(boolean sleep, boolean yield, int numeroDado, CDatiCondivisi dati) {
+    public ThDadi(boolean sleep, boolean yield, int numeroDado, CDatiCondivisi dati) {
         super();
         usatoSleep = sleep;
         usatoYield = yield;
         this.numeroDado = numeroDado;
         this.PtrDati = dati;
+        finito = false;
     }
 
     /**
-     * @author Tosetti Luca
-     *
      * @brief: Metodo "main" dei thread che vengono creati con l'uso di questa
      * classe
      *
@@ -83,7 +71,7 @@ public class ThDado1 extends Thread {
     @Override
     public void run() {
         try {
-            while (true) {
+            while (!finito) {
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }
@@ -91,17 +79,17 @@ public class ThDado1 extends Thread {
 
                 PtrDati.aggiungiStringa("Hai lanciato il " + numeroDado + "° dado: E' uscito " + num);
                 if (numeroDado == 1) {
-                    PtrDati.setPrimaRuota(num);
+                    PtrDati.setPrimoDado(num);
                 }
                 if (numeroDado == 2) {
-                    PtrDati.setSecondaRuota(num);
+                    PtrDati.setSecondoDado(num);
                 }
                 if (numeroDado == 3) {
-                    PtrDati.setTerzaRuota(num);
+                    PtrDati.setTerzoDado(num);
                 }
 
                 if (usatoSleep) {
-                    Thread.sleep(2000);
+                    Thread.sleep(500);
                 }
                 if (usatoYield) {
                     Thread.yield();
@@ -110,7 +98,19 @@ public class ThDado1 extends Thread {
         } catch (InterruptedException ex) {
 
         }
+        if (numeroDado == 1) {
+            PtrDati.SignalDado1();
+        }
+        if (numeroDado == 2) {
+            PtrDati.SignalDado2();
+        }
+        if (numeroDado == 3) {
+            PtrDati.SignalDado3();
+        }
+    }
 
+    void termina() {
+        finito = true;
     }
 
 }
